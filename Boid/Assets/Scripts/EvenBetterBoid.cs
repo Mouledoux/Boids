@@ -113,14 +113,14 @@ public class EvenBetterBoid : MonoBehaviour
 
     void VelocityLimit(GameObject b)
     {
-        if (b.GetComponent<Bird>().velocity.magnitude > 1 && b.GetComponent<Bird>().isPredator)
+        if (b.GetComponent<Bird>().velocity.magnitude > 1 && !b.GetComponent<Bird>().isPredator)
         {
-            b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
+            b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
         }
 
         else if (b.GetComponent<Bird>().velocity.magnitude > 1.1)
         {
-            b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
+            b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
         }
     }
 
