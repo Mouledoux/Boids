@@ -32,7 +32,7 @@ public class EvenBetterBoid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        AddBoids(50, 1);
+        AddBoids(100, 1);
     }
 
     // Update is called once per frame
@@ -167,6 +167,15 @@ public class EvenBetterBoid : MonoBehaviour
             Vector3 COM = Vector3.zero; // Center of mass
             int n = 0;
 
+            if (bird.GetComponent<Bird>().isPredator)
+            {
+                if (!bird.GetComponent<Bird>().target || bird.GetComponent<Bird>().target.GetComponent<Bird>().isPredator)
+                {
+                    bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
+                }
+                return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
+            }
+
             foreach (GameObject b in flock)
             {
                 if (b != bird &&
@@ -175,15 +184,6 @@ public class EvenBetterBoid : MonoBehaviour
                     COM += b.transform.position;    // Add the position to COM
                     n++;
                 }
-            }
-
-            if (bird.GetComponent<Bird>().isPredator)
-            {
-                if (!bird.GetComponent<Bird>().target || bird.GetComponent<Bird>().target.GetComponent<Bird>().isPredator)
-                {
-                    bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
-                }
-                return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
             }
 
             if (n == 0) return Vector3.zero; 
