@@ -83,7 +83,9 @@ public class EvenBetterBoid : MonoBehaviour
 
             b.transform.localPosition /= transform.localScale.x;
 
-            b.GetComponent<Bird>().velocity = new Vector3(0, 1, 0); // random z velocity
+            b.GetComponent<Bird>().velocity = new Vector3(Random.Range(-10.0f, 10.0f),
+                                                          Random.Range(-10.0f, 10.0f),
+                                                          Random.Range(-10.0f, 10.0f));
 
             flock.Add(b);
         }
@@ -100,7 +102,9 @@ public class EvenBetterBoid : MonoBehaviour
 
             p.transform.localPosition /= transform.localScale.x;
 
-            p.GetComponent<Bird>().velocity = new Vector3(0, 1, 0); // random z velocity
+            p.GetComponent<Bird>().velocity = new Vector3(Random.Range(-10.0f, 10.0f),
+                                                          Random.Range(-10.0f, 10.0f),
+                                                          Random.Range(-10.0f, 10.0f));
 
             flock.Add(p);
         }
@@ -109,7 +113,12 @@ public class EvenBetterBoid : MonoBehaviour
 
     void VelocityLimit(GameObject b)
     {
-        if (b.GetComponent<Bird>().velocity.magnitude > 1)
+        if (b.GetComponent<Bird>().velocity.magnitude > 1 && b.GetComponent<Bird>().isPredator)
+        {
+            b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
+        }
+
+        else if (b.GetComponent<Bird>().velocity.magnitude > 1.5)
         {
             b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
         }
@@ -138,6 +147,11 @@ public class EvenBetterBoid : MonoBehaviour
         {
             bird.transform.parent = transform;
         }
+        if (!free.isOn)
+        {
+            bird.transform.parent = null;
+            return (transform.position - bird.transform.position) / 100;
+        }
 
         if (bird.GetComponent<Bird>().isPredator)
         {
@@ -146,12 +160,6 @@ public class EvenBetterBoid : MonoBehaviour
                 bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
             }
             return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
-        }
-
-        if (!free.isOn)
-        {
-            bird.transform.parent = null;
-            return (transform.position - bird.transform.position) / 100;
         }
 
         else
@@ -192,7 +200,15 @@ public class EvenBetterBoid : MonoBehaviour
 
         foreach (GameObject b in flock)
         {
-            if (b != bird && b.GetComponent<Bird>().isPredator || bird.GetComponent<Bird>().isPredator)
+            if (b != bird && b.GetComponent<Bird>().isPredator && bird.GetComponent<Bird>().isPredator) // If the birds are not the same
+            {
+                if (Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value) // If the birds are too close
+                {
+                    pos -= (b.transform.position - bird.transform.position); // Avoid it
+                }
+            }
+
+            else if (b != bird && b.GetComponent<Bird>().isPredator)
             {
                 if (Vec3Dist(b.transform.position, bird.transform.position) < 1) // If the birds are too close
                 {
