@@ -32,7 +32,7 @@ public class EvenBetterBoid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        AddBoids(100, 1);
+        AddBoids(50, 1);
     }
 
     // Update is called once per frame
@@ -62,8 +62,10 @@ public class EvenBetterBoid : MonoBehaviour
             bird.transform.position += bird.GetComponent<Bird>().velocity;
             bird.transform.up = bird.GetComponent<Bird>().velocity.normalized;
             //bird.transform.rotation = Quaternion.LookRotation(bird.GetComponent<Bird>().velocity);
-            //Debug.DrawLine(bird.transform.position,
-            //              (bird.transform.position + bird.GetComponent<Bird>().velocity * 100));
+            if (bird.GetComponent<Bird>().target)
+            {
+                Debug.DrawLine(bird.transform.position, bird.GetComponent<Bird>().target.transform.position);
+            }
         }
     }
 
@@ -137,19 +139,19 @@ public class EvenBetterBoid : MonoBehaviour
             bird.transform.parent = transform;
         }
 
-        if (!free.isOn)
-        {
-            bird.transform.parent = null;
-            return (transform.position - bird.transform.position) / 100;
-        }
-
         if (bird.GetComponent<Bird>().isPredator)
         {
             if (!bird.GetComponent<Bird>().target || bird.GetComponent<Bird>().target.GetComponent<Bird>().isPredator)
             {
-                bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count + 1)];
+                bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
             }
             return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
+        }
+
+        if (!free.isOn)
+        {
+            bird.transform.parent = null;
+            return (transform.position - bird.transform.position) / 100;
         }
 
         else
@@ -165,6 +167,15 @@ public class EvenBetterBoid : MonoBehaviour
                     COM += b.transform.position;    // Add the position to COM
                     n++;
                 }
+            }
+
+            if (bird.GetComponent<Bird>().isPredator)
+            {
+                if (!bird.GetComponent<Bird>().target || bird.GetComponent<Bird>().target.GetComponent<Bird>().isPredator)
+                {
+                    bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
+                }
+                return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
             }
 
             if (n == 0) return Vector3.zero; 
