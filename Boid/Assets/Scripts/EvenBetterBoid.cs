@@ -118,7 +118,7 @@ public class EvenBetterBoid : MonoBehaviour
             b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
         }
 
-        else if (b.GetComponent<Bird>().velocity.magnitude > 1.5)
+        else if (b.GetComponent<Bird>().velocity.magnitude > 1.1)
         {
             b.GetComponent<Bird>().velocity = b.GetComponent<Bird>().velocity.normalized * 0.5f;
         }
@@ -133,6 +133,7 @@ public class EvenBetterBoid : MonoBehaviour
                 if (Vec3Dist(b.transform.position, bird.transform.position) < 1) // If the birds are too close
                 {
                     bird.GetComponent<Bird>().isPredator = true;
+                    bird.GetComponent<Bird>().eSpecies = Bird.Species.ePredator;
                     bird.transform.localScale = b.transform.localScale;
                     bird.GetComponent<Renderer>().material = b.GetComponent<Renderer>().material;
                 }

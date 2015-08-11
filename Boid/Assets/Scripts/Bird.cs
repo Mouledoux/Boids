@@ -11,7 +11,8 @@ public class Bird : MonoBehaviour
     {
         eBird,
         ePredator,
-        eAlpha,
+        eProtector,
+        eApex,
     }
 
     public enum State
@@ -21,11 +22,13 @@ public class Bird : MonoBehaviour
         eProtect,
     }
 
+    public Species eSpecies;
+    public State eState;
     public bool isPredator = false;
 
     void Update()
     {
         speed = velocity.magnitude;
+        name = eSpecies.ToString();
     }
-
 }
