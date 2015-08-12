@@ -32,7 +32,7 @@ public class EvenBetterBoid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        AddBoids(100, 1);
+        AddBoids(100, 0);
     }
 
     // Update is called once per frame
@@ -117,8 +117,7 @@ public class EvenBetterBoid : MonoBehaviour
         {
             b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
         }
-
-        else if (b.GetComponent<Bird>().velocity.magnitude > 1.1)
+        if (b.GetComponent<Bird>().velocity.magnitude > 1.1)
         {
             b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
         }
@@ -211,7 +210,7 @@ public class EvenBetterBoid : MonoBehaviour
 
             else if (b != bird && b.GetComponent<Bird>().isPredator)
             {
-                if (Vec3Dist(b.transform.position, bird.transform.position) < 1) // If the birds are too close
+                if (Vec3Dist(b.transform.position, bird.transform.position) < 0.9f) // If the birds are too close
                 {
                     pos -= (b.transform.position - bird.transform.position); // Avoid it
                 }
