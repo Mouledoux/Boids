@@ -10,19 +10,25 @@ public class EvenBetterBoid : MonoBehaviour
     public Slider sepSlide;
     public Slider alignSlide;
 
+    public Button fire;
+
     public Toggle free;
 
     public GameObject boid;
     public GameObject predator;
 
-    public float m_cohesionMod;     // strength of cohestion
-    public float m_alignmentMod;    // addition to current velocity
-    public float m_seperationMod;   // strength of seperation
+    //Replaced by slider
+    //public float m_cohesionMod;     // strength of cohestion
+    //Replaced by slider
+    //public float m_alignmentMod;    // addition to current velocity
+    public float m_seperationMod;     // strength of seperation
 
-    public float m_sThreshold;      // threshold of seperation
+    //Replaced by slider
+    //public float m_sThreshold;      // threshold of seperation
 
     public float limit;
 
+    //The 5 rules
     Vector3 tendency;
     Vector3 box;
     Vector3 cohesion;
@@ -55,17 +61,13 @@ public class EvenBetterBoid : MonoBehaviour
             tendency = TendencyTo(bird);
             bird.GetComponent<Bird>().velocity += tendency * Random.Range(0.001f, 0.01f);
 
-            Virus(bird);
+            //Virus(bird);
 
             VelocityLimit(bird);
 
             bird.transform.position += bird.GetComponent<Bird>().velocity;
             bird.transform.up = bird.GetComponent<Bird>().velocity.normalized;
             //bird.transform.rotation = Quaternion.LookRotation(bird.GetComponent<Bird>().velocity);
-            if (bird.GetComponent<Bird>().target)
-            {
-                Debug.DrawLine(bird.transform.position, bird.GetComponent<Bird>().target.transform.position);
-            }
         }
     }
 
@@ -113,23 +115,20 @@ public class EvenBetterBoid : MonoBehaviour
 
     void VelocityLimit(GameObject b)
     {
-        if (b.GetComponent<Bird>().velocity.magnitude > 1 && !b.GetComponent<Bird>().isPredator)
-        {
-            b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
-        }
         if (b.GetComponent<Bird>().velocity.magnitude > 1.1)
         {
             b.GetComponent<Bird>().velocity -= b.GetComponent<Bird>().velocity * 0.1f;
         }
     }
 
+    //No longer in use
     void Virus(GameObject bird)
     {
         foreach (GameObject b in flock)
         {
             if (b != bird && b.GetComponent<Bird>().isPredator && !bird.GetComponent<Bird>().isPredator)
             {
-                if (Vec3Dist(b.transform.position, bird.transform.position) < 1) // If the birds are too close
+                if (Vec3Dist(b.transform.position, bird.transform.position) < 1)
                 {
                     bird.GetComponent<Bird>().isPredator = true;
                     bird.GetComponent<Bird>().eSpecies = Bird.Species.ePredator;
@@ -147,19 +146,11 @@ public class EvenBetterBoid : MonoBehaviour
         {
             bird.transform.parent = transform;
         }
+
         if (!free.isOn)
         {
             bird.transform.parent = null;
             return (transform.position - bird.transform.position) / 100;
-        }
-
-        if (bird.GetComponent<Bird>().isPredator)
-        {
-            if (!bird.GetComponent<Bird>().target || bird.GetComponent<Bird>().target.GetComponent<Bird>().isPredator)
-            {
-                bird.GetComponent<Bird>().target = flock[Random.Range(0, flock.Count)];
-            }
-            return (bird.GetComponent<Bird>().target.transform.position - bird.transform.position) / 100;
         }
 
         else
@@ -179,16 +170,16 @@ public class EvenBetterBoid : MonoBehaviour
             foreach (GameObject b in flock)
             {
                 if (b != bird &&
-                    Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value * 2) // If the birds are not the same
+                    Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value * 2)   // If the birds are not the same
                 {
-                    COM += b.transform.position;    // Add the position to COM
+                    COM += b.transform.position;                                                    // Add the position to COM
                     n++;
                 }
             }
 
             if (n == 0) return Vector3.zero; 
 
-            COM /= (n); // Divid COM by n-1 to get the average
+            COM /= (n);                                   // Divid COM by n-1 to get the average
 
             return (COM - bird.transform.position) / 100; // Returns the birds current position 1% closer to COM
         }
@@ -200,32 +191,16 @@ public class EvenBetterBoid : MonoBehaviour
 
         foreach (GameObject b in flock)
         {
-            if (b != bird && b.GetComponent<Bird>().isPredator && bird.GetComponent<Bird>().isPredator) // If the birds are not the same
+            if (b != bird)                                                                      // If the birds are not the same
             {
-                if (Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value) // If the birds are too close
+                if (Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value)   // If the birds are too close
                 {
-                    pos -= (b.transform.position - bird.transform.position); // Avoid it
-                }
-            }
-
-            else if (b != bird && b.GetComponent<Bird>().isPredator)
-            {
-                if (Vec3Dist(b.transform.position, bird.transform.position) < 0.9f) // If the birds are too close
-                {
-                    pos -= (b.transform.position - bird.transform.position); // Avoid it
-                }
-            }
-
-            else if (b != bird) // If the birds are not the same
-            {
-                if (Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value) // If the birds are too close
-                {
-                    pos -= (b.transform.position - bird.transform.position); // Avoid it
+                    pos -= (b.transform.position - bird.transform.position);                    // Avoid it
                 }
             }
         }
 
-        return pos / 8;
+        return pos / 10;
     }
 
     Vector3 Alignment(GameObject bird)
@@ -235,8 +210,8 @@ public class EvenBetterBoid : MonoBehaviour
 
         foreach (GameObject b in flock)
         {
-            if (b != bird &&
-                Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value * 2) // If the birds are not the same
+            if (b != bird &&                                                                    // If the birds are not the same
+                Vec3Dist(b.transform.position, bird.transform.position) < sepSlide.value * 2)   // If they are close enough
             {
                 align += b.GetComponent<Bird>().velocity;
                 n++;
@@ -257,6 +232,8 @@ public class EvenBetterBoid : MonoBehaviour
 
         if (free.isOn)
         {
+
+            //Limits movement in the + direction
             if (b.x > transform.position.x + limit)
             {
                 bound.x = transform.position.x - b.x;
@@ -270,7 +247,7 @@ public class EvenBetterBoid : MonoBehaviour
                 bound.z = transform.position.z - b.z;
             }
 
-
+            //Limits movement in the - direction
             if (b.x < transform.position.x - limit)
             {
                 bound.x = transform.position.x - b.x;
@@ -303,12 +280,5 @@ public class EvenBetterBoid : MonoBehaviour
         return (Mathf.Sqrt((a.x - b.x) * (a.x - b.x) +
                            (a.y - b.y) * (a.y - b.y) +
                            (a.z - b.z) * (a.z - b.z)));
-    }  // Distance between 2 Vector3
-
-    Vector3 Subtract(Vector3 lhs, Vector3 rhs)
-    {
-        return (new Vector3(lhs.x - rhs.x,
-                            lhs.y - rhs.y,
-                            lhs.z - rhs.z));
     }
 }
