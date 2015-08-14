@@ -58,7 +58,7 @@ public class EvenBetterBoid : MonoBehaviour
             Virus(bird);
 
             VelocityLimit(bird);
-            
+
             bird.transform.position += bird.GetComponent<Bird>().velocity;
             bird.transform.up = bird.GetComponent<Bird>().velocity.normalized;
             //bird.transform.rotation = Quaternion.LookRotation(bird.GetComponent<Bird>().velocity);
