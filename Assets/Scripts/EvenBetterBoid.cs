@@ -38,7 +38,7 @@ public class EvenBetterBoid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        AddBoids(100, 0);
+        AddBoids(50, 0);
     }
 
     // Update is called once per frame
